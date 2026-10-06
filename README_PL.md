@@ -38,8 +38,9 @@ gdzie `[0.25, 0.25]` to środek krzywej, a `[0.5, 0]` i `[0, 0.5]` — środki r
 
 ### Rodzaje reguł
 
-- **Gładka** — trójkąty są kolejnymi odcinkami krzywej dużego trójkąta, w dwóch kawałkach albo
-  w większej ich liczbie: rysunek zbiega do tej krzywej Béziera.
+- **Gładka** — trójkąty są odcinkami krzywej dużego trójkąta, przebieganymi w którąkolwiek stronę,
+  i razem pokrywają ją całą, w dwóch kawałkach albo w większej ich liczbie: rysunek zbiega do tej
+  krzywej Béziera.
 - **Łańcuch** — łączą się końcami od początku do końca: jedna ciągła linia, choćby najbardziej
   poszarpana (Koch, Sierpiński, Katedra).
 - **Luźna** — nie łączą się: rysunek się rozgałęzia albo rozsypuje w pył (Pnącze, Wiatrak).

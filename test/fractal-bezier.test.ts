@@ -55,8 +55,11 @@ test('kinds of rules: smooth, chain, loose', () => {
   const more: Rule = [...splitPiece(bezier[0]), ...splitPiece(bezier[1])];
   assert.equal(ruleKind(more), 'smooth');
   assert.equal(ruleKind([...splitPiece(more[0]), ...more.slice(1)]), 'smooth');
-  // Running a piece backwards breaks the chain.
-  assert.equal(ruleKind([reversePiece(bezier[0]), bezier[1]]), 'loose');
+  // A stretch of the curve run backwards is still the curve; a gap is not.
+  assert.equal(ruleKind([reversePiece(bezier[0]), bezier[1]]), 'smooth');
+  assert.equal(ruleKind([bezier[0], splitPiece(bezier[1])[1]]), 'loose');
+  // Running a piece of a chain backwards breaks the chain.
+  assert.equal(ruleKind([reversePiece(koch[0]), ...koch.slice(1)]), 'loose');
   // Moving the control point keeps the chain but leaves the curve.
   assert.equal(ruleKind([[[1, 0], [0.5, 0.1], [0.25, 0.25]], bezier[1]]), 'chain');
 });

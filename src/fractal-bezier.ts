@@ -253,32 +253,39 @@ const close = (p: Point, q: Point, eps = 1e-6) => Math.abs(p[0] - q[0]) < eps &&
 export type RuleKind = 'smooth' | 'chain' | 'loose';
 
 /**
- * smooth — the pieces are consecutive stretches of the parent's own curve: the limit is that
- *          Bézier curve, however many pieces there are;
+ * smooth — every piece is a stretch of the parent's own curve, run either way, and together
+ *          they cover all of it: the limit is that Bézier curve, however many pieces there are;
  * chain  — the pieces join end to end from the parent's start to its end: one continuous curve;
- * loose  — they do not: the drawing branches or falls apart into dust.
+ * loose  — neither: the drawing branches or falls apart into dust.
  */
 export function ruleKind(rule: Rule): RuleKind {
-  const chained = rule.length > 0
-    && close(rule[0][0], [1, 0])
-    && close(rule[rule.length - 1][2], [0, 1])
-    && rule.every((p, i) => i === 0 || close(rule[i - 1][2], p[0]));
-  if (!chained) return 'loose';
+  if (rule.length === 0) return 'loose';
   // On the parent's curve B(t), in affine coordinates: [(1 − t)², t²].
   const along = ([a, b]: Point): number | null => {
     if (b < -1e-9 || a < -1e-9) return null;
     const tt = Math.sqrt(Math.max(b, 0));
     return Math.abs(a - (1 - tt) ** 2) < 1e-6 ? tt : null;
   };
-  let prev = 0;
+  const stretches: [number, number][] = [];
   for (const [s, c, e] of rule) {
     const t0 = along(s), t1 = along(e);
-    if (t0 === null || t1 === null || Math.abs(t0 - prev) > 1e-6 || t1 <= t0 + 1e-9) return 'chain';
-    // The control point of the stretch from t0 to t1.
-    if (!close(c, [(1 - t0) * (1 - t1), t0 * t1])) return 'chain';
-    prev = t1;
+    // The control point of the stretch from t0 to t1 (the same either way).
+    if (t0 === null || t1 === null || Math.abs(t1 - t0) < 1e-9 || !close(c, [(1 - t0) * (1 - t1), t0 * t1])) break;
+    stretches.push([Math.min(t0, t1), Math.max(t0, t1)]);
   }
-  return Math.abs(prev - 1) < 1e-6 ? 'smooth' : 'chain';
+  if (stretches.length === rule.length) {
+    stretches.sort((x, y) => x[0] - y[0]);
+    let reach = 0;
+    for (const [lo, hi] of stretches) {
+      if (lo > reach + 1e-6) break;
+      reach = Math.max(reach, hi);
+    }
+    if (reach > 1 - 1e-6) return 'smooth';
+  }
+  const chained = close(rule[0][0], [1, 0])
+    && close(rule[rule.length - 1][2], [0, 1])
+    && rule.every((p, i) => i === 0 || close(rule[i - 1][2], p[0]));
+  return chained ? 'chain' : 'loose';
 }
 
 // ---- Expansion ----
@@ -383,6 +390,8 @@ export interface DrawOptions extends ExpandOptions {
   constructionLimit?: number;
   /** A white square under the drawing (for a downloaded file). */
   background?: boolean;
+  /** Line width in viewBox units, instead of the one the settings choose (small pictures). */
+  stroke?: number;
 }
 
 /** Fits points into a square of the given side, centred, with a margin. */
@@ -402,7 +411,7 @@ function fitter(pieces: Float64Array, count: number, size: number, controls: boo
 }
 
 /** Chords of the pieces as path data; a chord starting where the last one ended continues the line. */
-function chordPath(pieces: Float64Array, count: number, map: (x: number, y: number) => [number, number], precision: number): string {
+export function chordPath(pieces: Float64Array, count: number, map: (x: number, y: number) => [number, number], precision: number): string {
   const f = (v: number) => {
     const s = v.toFixed(precision);
     return s.includes('.') ? s.replace(/\.?0+$/, '') : s;
@@ -421,7 +430,8 @@ function chordPath(pieces: Float64Array, count: number, map: (x: number, y: numb
   return out.join('');
 }
 
-function controlPath(pieces: Float64Array, count: number, map: (x: number, y: number) => [number, number], precision: number): string {
+/** Control triangles of the pieces (start, control, end) as path data. */
+export function controlPath(pieces: Float64Array, count: number, map: (x: number, y: number) => [number, number], precision: number): string {
   const f = (v: number) => Number(v.toFixed(precision));
   const out: string[] = [];
   for (let i = 0; i < count; i++) {
@@ -439,7 +449,7 @@ export function renderDrawing(s: Settings, o: DrawOptions = {}): Drawing {
   const ex = expand(s.rule, BASES[s.base], s.depth, o);
   const showControls = s.construction && ex.count <= (o.constructionLimit ?? 4000);
   const map = fitter(ex.pieces, ex.count, size, showControls);
-  const width = LINES[s.line] * size / 1000;
+  const width = o.stroke ?? LINES[s.line] * size / 1000;
   const dims = o.width ? ` width="${o.width}" height="${o.width}"` : '';
   const parts = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}"${dims}>`,

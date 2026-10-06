@@ -40,8 +40,8 @@ two arms.
 
 ### Kinds of rules
 
-- **Smooth** — the triangles are consecutive stretches of the big triangle's own curve, in two
-  pieces or in more: the drawing converges to that Bézier curve.
+- **Smooth** — the triangles are stretches of the big triangle's own curve, run either way, and
+  together cover all of it, in two pieces or in more: the drawing converges to that Bézier curve.
 - **Chain** — they join end to end from the start to the end: one continuous line, however
   jagged (Koch, Sierpiński, the Cathedral).
 - **Loose** — they do not: the drawing branches or falls apart into dust (the Vine, the Windmill).
