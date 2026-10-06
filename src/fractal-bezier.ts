@@ -8,7 +8,8 @@
 // itself; any other rule gives a fractal. Each finished triangle is drawn as its chord,
 // from start to end.
 //
-// Successor of a Groovy script from 2017 (iterate_shape, apply_shape). Kept from it:
+// Successor of a Groovy script from 2011, most of its shapes from 2014 (iterate_shape,
+// apply_shape). Kept from it:
 // the affine coordinates of the rule, the bases, the shapes and their names.
 // New: a detail limit instead of a fixed depth for every piece, a budget, the link.
 
@@ -67,7 +68,7 @@ export const LINE_IDS: LineId[] = ['thin', 'medium', 'thick'];
 export const INK = '#1f3a7a';
 export const CONSTRUCTION_INK = '#aab3cc';
 
-// ---- Presets: the shapes of the 2017 script, with thirds written exactly ----
+// ---- Presets: the shapes of the old script, with thirds written exactly ----
 
 export interface Preset {
   id: string;
@@ -182,6 +183,11 @@ export const PRESETS: Preset[] = [
   { id: 'hay', name: { en: 'Hay', pl: 'Siano' }, base: 'arch', rule: [
     [[1, 0], [0.5, 0.5], [0, 0.5]],
     [[0, 0.5], [0.125, 0.125], [0.5, 0]],
+    [[0.5, 0], [0, 0.5], [0, 1]],
+  ] },
+  { id: 'fly', name: { en: 'Fly', pl: 'Mucha' }, base: 'arch', rule: [
+    [[1, 0], [0.5, 0], [0, 0.5]],
+    [[0, 0.5], [0.5, 0.5], [0.5, 0]],
     [[0.5, 0], [0, 0.5], [0, 1]],
   ] },
   { id: 'hut', name: { en: 'Hut', pl: 'Szałas' }, base: 'arch', rule: [

@@ -7,7 +7,7 @@ daje idealnie gładką krzywą Béziera, inna płatek Kocha. Reguły można zmie
 **[bsulkowski.pl/pl/fractal-bezier](https://bsulkowski.pl/pl/fractal-bezier)**; w tym repozytorium
 jest kod, który je rysuje.
 
-![Dwadzieścia kształtów narysowanych różnymi regułami](examples/gallery.svg)
+![Dwadzieścia jeden kształtów narysowanych różnymi regułami](examples/gallery.svg)
 
 ## Pomysł
 
@@ -57,8 +57,8 @@ albo dwóch łuków od dolnych rogów do wspólnego szczytu, lustrzanych odbić 
 
 ## Pochodzenie
 
-Skrypt w Groovym z 2017 roku, który zapisywał rysunek do pliku SVG, z kształtami trzymanymi
-w źródle jako listy trójkątów. Kształty są tu te same, z ⅓ i ⅔ zapisanymi dokładnie zamiast
+Skrypt w Groovym z 2011 roku, który zapisywał rysunek do pliku SVG, z kształtami trzymanymi
+w źródle jako listy trójkątów; większość z nich doszła w 2014 roku. Kształty są tu te same, z ⅓ i ⅔ zapisanymi dokładnie zamiast
 0,33 i 0,67; nazwy pochodzą ze skryptu.
 
 ## Kod

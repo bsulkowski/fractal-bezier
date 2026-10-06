@@ -7,7 +7,7 @@ a perfectly smooth Bézier curve, another the Koch snowflake. Play with the rule
 at **[bsulkowski.pl/fractal-bezier](https://bsulkowski.pl/fractal-bezier)**; this repository
 holds the code that draws them.
 
-![Twenty shapes drawn with different rules](examples/gallery.svg)
+![Twenty-one shapes drawn with different rules](examples/gallery.svg)
 
 ## The idea
 
@@ -59,8 +59,8 @@ Christmas tree).
 
 ## Origin
 
-A Groovy script from 2017 that wrote the drawing to an SVG file, with the shapes kept in its
-source as lists of triangles. The shapes are the same here, with ⅓ and ⅔ written exactly
+A Groovy script from 2011 that wrote the drawing to an SVG file, with the shapes kept in its
+source as lists of triangles; most of them were added in 2014. The shapes are the same here, with ⅓ and ⅔ written exactly
 instead of 0.33 and 0.67; the names are translated from the Polish ones.
 
 ## Using the code
