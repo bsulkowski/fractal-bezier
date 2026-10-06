@@ -1,0 +1,27 @@
+{
+  "name": "fractal-bezier",
+  "version": "1.0.0",
+  "description": "Curves drawn by replacing a triangle with smaller triangles, again and again: a smooth Bézier curve or a fractal, depending on the rule. Drawn as SVG.",
+  "license": "MIT",
+  "author": "Bartosz Sułkowski (https://bsulkowski.pl)",
+  "homepage": "https://bsulkowski.pl/fractal-bezier",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bsulkowski/fractal-bezier.git"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./src/fractal-bezier.ts"
+  },
+  "types": "./src/fractal-bezier.ts",
+  "files": [
+    "src"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "test": "node --experimental-strip-types --test test/fractal-bezier.test.ts",
+    "examples": "node --experimental-strip-types scripts/examples.ts"
+  }
+}
