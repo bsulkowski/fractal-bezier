@@ -17,7 +17,7 @@ export type Lang = 'en' | 'pl';
 
 // Shown discreetly under the drawing. The link parameters (see parseSettings) are the promise:
 // an old link keeps meaning the same rule; the drawing details may improve.
-export const TOOL_VERSION = '1.0';
+export const TOOL_VERSION = '1.1';
 
 /** A point: [x, y]. In a rule, [a, b]: affine coordinates of the parent triangle. */
 export type Point = [number, number];
@@ -83,6 +83,12 @@ export const PRESETS: Preset[] = [
   { id: 'bezier', name: { en: 'Bézier curve', pl: 'Krzywa Béziera' }, base: 'arch', rule: [
     [[1, 0], [0.5, 0], [0.25, 0.25]],
     [[0.25, 0.25], [0, 0.5], [0, 1]],
+  ] },
+  // Found by hand in 2026, on the loop base: 1.4% from a circle, but a fractal up close. An exact
+  // circle cannot come out of this method: an affine map turns a circle into an ellipse.
+  { id: 'wheel', name: { en: 'Wheel', pl: 'Koło' }, base: 'loop', rule: [
+    [[1, 0], [0.5867, -0.0036], [0.3393, 0.3353]],
+    [[0.3393, 0.3353], [0.0056, 0.5959], [0, 1]],
   ] },
   { id: 'loops', name: { en: 'Loops', pl: 'Pętelki' }, base: 'arch', rule: [
     [[1, 0], [0.5, 0], [0.25, 0.25]],

@@ -49,7 +49,7 @@ test('the Bézier rule converges to the curve of the base', () => {
 test('kinds of rules: smooth, chain, loose', () => {
   const kinds = Object.fromEntries(PRESETS.map((p) => [p.id, ruleKind(p.rule)]));
   assert.equal(kinds.bezier, 'smooth');
-  for (const id of ['koch', 'cathedral', 'sierpinski', 'star', 'frost', 'tree', 'heart', 'fly']) assert.equal(kinds[id], 'chain', id);
+  for (const id of ['koch', 'cathedral', 'sierpinski', 'star', 'frost', 'tree', 'heart', 'fly', 'wheel']) assert.equal(kinds[id], 'chain', id);
   for (const id of ['vine', 'ladder', 'hut', 'windmill']) assert.equal(kinds[id], 'loose', id);
   // Splitting a piece along the curve keeps the rule smooth, at any place.
   const more: Rule = [...splitPiece(bezier[0]), ...splitPiece(bezier[1])];

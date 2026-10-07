@@ -7,7 +7,7 @@ a perfectly smooth Bézier curve, another the Koch snowflake. Play with the rule
 at **[bsulkowski.pl/fractal-bezier](https://bsulkowski.pl/fractal-bezier)**; this repository
 holds the code that draws them.
 
-![Twenty-one shapes drawn with different rules](examples/gallery.svg)
+![Twenty-two shapes drawn with different rules](examples/gallery.svg)
 
 ## The idea
 
@@ -49,6 +49,16 @@ two arms.
 A triangle not much smaller than the one it replaces would take a very long time to settle,
 so the drawing stops before a level that would exceed a budget of pieces, and pieces smaller
 than the detail of the picture are not split any further.
+
+### No circle
+
+A parabola comes out exactly, a circle never does. Every step is an affine map, which turns a
+circle into an ellipse; for a smaller arc of the circle to be an image of the whole one, the map
+would have to take the circle onto itself, and such a map does not shrink anything. The circle's
+own halves change from level to level: in the equilateral triangle of a 120° arc its middle is at
+`[⅓, ⅓]`, in the triangles of the 60° arcs at 0.268, then 0.254, 0.251 … closing in on the ¼ of
+the parabola. The Wheel, found by hand, keeps within 1.4% of a circle on the loop base and is a
+fractal up close.
 
 ### Bases
 
@@ -106,6 +116,7 @@ what was drawn before. The level of detail and the budget may still change.
 
 `TOOL_VERSION` follows that: a new option → 1.1, a fix in the drawing → 1.0.1.
 
+- **1.1** — the Wheel (`shape=wheel`).
 - **1.0** — the first version.
 
 ## Tests

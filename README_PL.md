@@ -7,7 +7,7 @@ daje idealnie gładką krzywą Béziera, inna płatek Kocha. Reguły można zmie
 **[bsulkowski.pl/pl/fractal-bezier](https://bsulkowski.pl/pl/fractal-bezier)**; w tym repozytorium
 jest kod, który je rysuje.
 
-![Dwadzieścia jeden kształtów narysowanych różnymi regułami](examples/gallery.svg)
+![Dwadzieścia dwa kształty narysowane różnymi regułami](examples/gallery.svg)
 
 ## Pomysł
 
@@ -48,6 +48,15 @@ gdzie `[0.25, 0.25]` to środek krzywej, a `[0.5, 0]` i `[0, 0.5]` — środki r
 Trójkąt niewiele mniejszy od tego, który zastępuje, ustalałby się bardzo długo, więc rysunek
 zatrzymuje się przed poziomem, który przekroczyłby budżet kawałków, a kawałki mniejsze od
 szczegółu rysunku nie są już dzielone.
+
+### Bez koła
+
+Parabola wychodzi dokładnie, okrąg — nigdy. Każdy krok to przekształcenie afiniczne, a ono
+zamienia okrąg w elipsę; żeby mniejszy łuk okręgu był obrazem całego, przekształcenie musiałoby
+przeprowadzać okrąg na niego samego, a takie niczego nie zmniejsza. Połowy samego okręgu zmieniają
+się z poziomu na poziom: w trójkącie równobocznym łuku 120° jego środek leży w `[⅓, ⅓]`,
+w trójkątach łuków 60° — w 0,268, dalej 0,254, 0,251… coraz bliżej ¼ paraboli. Znalezione ręcznie
+Koło trzyma się okręgu z dokładnością 1,4% na podstawie z trzech łuków, a z bliska jest fraktalem.
 
 ### Podstawy
 
