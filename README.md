@@ -89,8 +89,10 @@ const { svg, level, truncated } = renderDrawing(settings, { budget: 50_000 });  
 renderSteps(rule);                                // levels 0–3 side by side, with their triangles
 
 expand(rule, BASES.arch, 6).pieces;               // Float64Array, six numbers per triangle
-settingsQuery(settings);                          // 'shape=cathedral&base=arch' — defaults are left out
-parseSettings(new URLSearchParams('shape=cathedral&base=arch'));  // the same settings back
+splitPiece(rule[0]); reversePiece(rule[0]);       // operations of the editor on one triangle,
+equilateralPiece(rule[0]); newPiece(rule);         // and a new triangle on free dots
+settingsQuery(settings);                          // 'rule=1_0_.6667_0_…&base=arch' — defaults are left out
+parseSettings(new URLSearchParams(settingsQuery(settings)));        // the same settings back
 ```
 
 Install from GitHub: `npm install github:bsulkowski/fractal-bezier`, or with `#<commit>` at the end
@@ -101,11 +103,12 @@ does; in an Astro or Vite SSR build, add `fractal-bezier` to `ssr.noExternal`).
 
 | Parameter | Meaning | Default |
 |---|---|---|
-| `shape` | a preset by name, e.g. `koch`, `tree` | `koch` |
-| `rule` | a rule of one's own: six numbers per triangle joined by `_`, e.g. `1_0_.5_0_.25_.25_.25_.25_0_.5_0_1` | — |
+| `rule` | six numbers per triangle joined by `_`, e.g. `1_0_.5_0_.25_.25_.25_.25_0_.5_0_1` (the Bézier curve); the shapes in the gallery too | the Koch snowflake |
+| `shape` | a shape by name, e.g. `tree` — still read, links made since 1.2 use `rule` | — |
 | `base` | `arch`, `loop` or `pair` | `loop` |
 | `depth` | levels of replacement, 0–12 | `10` |
 | `line` | `thin`, `medium` or `thick` | `medium` |
+| `ink` | the line colour: `blue`, `grey`, `green`, `sepia`, or six hex digits, e.g. `1f3a7a` | `blue` |
 | `steps` | `1` draws the triangles of the finished pieces too | — |
 
 ### Compatibility
@@ -116,6 +119,7 @@ what was drawn before. The level of detail and the budget may still change.
 
 `TOOL_VERSION` follows that: a new option → 1.1, a fix in the drawing → 1.0.1.
 
+- **1.2** — the line colour (`ink`); links carry every rule as its numbers (`shape` is still read); the Koch snowflake first among the shapes.
 - **1.1** — the Wheel (`shape=wheel`).
 - **1.0** — the first version.
 

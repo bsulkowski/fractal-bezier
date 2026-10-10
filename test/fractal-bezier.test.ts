@@ -10,8 +10,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  BASES, DEFAULTS, PRESETS, REFERENCE,
-  affine, applyRule, coordinates, decodeRule, encodeRule, expand, parseSettings, presetById,
+  BASES, DEFAULTS, INKS, PRESETS, REFERENCE,
+  affine, applyRule, coordinates, decodeRule, encodeRule, equilateralPiece, expand, inkColors, newPiece,
+  parseSettings, presetById,
   presetOf, renderDrawing, renderSteps, reversePiece, ruleKind, sameRule, settingsQuery, splitPiece,
   type Piece, type Point, type Rule, type Settings,
 } from '../src/fractal-bezier.ts';
@@ -123,7 +124,7 @@ test('preset ids are unique and their rules distinct', () => {
 test('settings survive the link', () => {
   assert.equal(settingsQuery(DEFAULTS), '');
   const cases: Partial<Settings>[] = [
-    { rule: presetById('tree')!.rule, base: 'pair' },
+    { rule: presetById('tree')!.rule, base: 'pair', ink: 'green' },
     { rule: bezier, depth: 3, construction: true },
     { rule: [[[1, 0], [0.5, 0.125], [0.25, 0.25]], [[0.25, 0.25], [-0.25, 0.5], [0, 1]]], line: 'thick' },
   ];
@@ -133,8 +134,13 @@ test('settings survive the link', () => {
     assert.ok(sameRule(back.rule, s.rule));
     assert.deepEqual({ ...back, rule: null }, { ...s, rule: null });
   }
-  // A preset goes by its name, anything else by its numbers.
-  assert.equal(settingsQuery({ ...DEFAULTS, rule: bezier }), 'shape=bezier');
+  // Every rule goes by its numbers, a preset too; a link with its name still opens it.
+  assert.equal(settingsQuery({ ...DEFAULTS, rule: bezier }), 'rule=1_0_.5_0_.25_.25_.25_.25_0_.5_0_1');
+  assert.ok(sameRule(parseSettings(new URLSearchParams('shape=bezier')).rule, bezier));
+  // The colour: a preset by name, one's own by six hex digits.
+  assert.equal(settingsQuery({ ...DEFAULTS, ink: 'sepia' }), 'ink=sepia');
+  assert.equal(parseSettings(new URLSearchParams('ink=1A2B3C')).ink, '1a2b3c');
+  assert.equal(parseSettings(new URLSearchParams('ink=red')).ink, DEFAULTS.ink);
   assert.match(settingsQuery({ ...DEFAULTS, rule: cases[2].rule! }), /^rule=1_0_\.5_\.125_/);
   // The numbers need no escaping in a link.
   const enc = encodeRule(presetById('frost')!.rule);
@@ -149,4 +155,49 @@ test('a link that does not make sense falls back to the defaults', () => {
   assert.equal(s.line, DEFAULTS.line);
   assert.equal(decodeRule('1_0_0_0_0_NaN'), null);
   assert.equal(decodeRule(Array(13 * 6).fill('0').join('_')), null);
+});
+
+test('the Koch snowflake is the first shape and the default', () => {
+  assert.equal(PRESETS[0].id, 'koch');
+  assert.ok(sameRule(DEFAULTS.rule, PRESETS[0].rule));
+  assert.equal(DEFAULTS.base, PRESETS[0].base);
+});
+
+test('line colours: presets and one\'s own, with a paler construction colour', () => {
+  assert.equal(inkColors('blue').line, INKS.blue);
+  assert.deepEqual(inkColors('ffffff'), { line: '#ffffff', construction: '#ffffff' });
+  assert.equal(inkColors('000000').construction, '#aaaaaa');
+  assert.match(renderDrawing({ ...DEFAULTS, ink: 'sepia' }).svg, /stroke="#8b5e3c"/);
+});
+
+test('an equilateral piece keeps its ends, its side and the dots', () => {
+  const plane = (p: Piece) => p.map((q) => affine(REFERENCE, q));
+  const side = (p: Piece) => { const [s, c, e] = plane(p); const v = (e[0] - s[0]) * (c[1] - s[1]) - (e[1] - s[1]) * (c[0] - s[0]); return Math.abs(v) < 1e-9 ? 0 : Math.sign(v); };
+  const cases: Piece[] = [bezier[0], bezier[1], [[1, 0], [0.5, 0.2], [0.5, 0]], reversePiece(bezier[0]), [[0, 0.5], [0.25, 0.25], [0.5, 0]]];
+  for (const piece of cases) {
+    const eq = equilateralPiece(piece);
+    assert.deepEqual([eq[0], eq[2]], [piece[0], piece[2]]);
+    const [s, c, e] = plane(eq);
+    const d = (p: Point, q: Point) => Math.hypot(p[0] - q[0], p[1] - q[1]);
+    assert.ok(Math.abs(d(s, c) - d(s, e)) < 1e-9 && Math.abs(d(e, c) - d(s, e)) < 1e-9);
+    if (side(piece) !== 0) assert.equal(side(eq), side(piece));
+    // Ends on the dots, apex on the dots.
+    for (const v of eq[1]) assert.ok(Math.abs(v * 24 - Math.round(v * 24)) < 1e-9, String(eq[1]));
+  }
+  // The reference triangle is already equilateral.
+  const ref: Piece = [[1, 0], [0, 0], [0, 1]];
+  assert.deepEqual(equilateralPiece(ref), ref);
+  // A control point on the chord goes to the reference triangle's side.
+  assert.deepEqual(equilateralPiece([[1, 0], [0.5, 0.5], [0, 1]]), ref);
+});
+
+test('a new piece lands on free dots', () => {
+  let rule: Rule = [...bezier];
+  for (let i = 0; i < 8; i++) {
+    const p = newPiece(rule);
+    const corners = rule.flatMap((q) => q);
+    for (const c of p) assert.ok(!corners.some((t) => Math.abs(t[0] - c[0]) < 1e-9 && Math.abs(t[1] - c[1]) < 1e-9));
+    assert.deepEqual(equilateralPiece(p).map((q) => q.map((v) => Math.round(v * 24))), p.map((q) => q.map((v) => Math.round(v * 24))));
+    rule = [...rule, p];
+  }
 });

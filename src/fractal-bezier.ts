@@ -17,7 +17,7 @@ export type Lang = 'en' | 'pl';
 
 // Shown discreetly under the drawing. The link parameters (see parseSettings) are the promise:
 // an old link keeps meaning the same rule; the drawing details may improve.
-export const TOOL_VERSION = '1.1';
+export const TOOL_VERSION = '1.2';
 
 /** A point: [x, y]. In a rule, [a, b]: affine coordinates of the parent triangle. */
 export type Point = [number, number];
@@ -27,6 +27,9 @@ export type Piece = [Point, Point, Point];
 export type Rule = Piece[];
 export type BaseId = 'arch' | 'loop' | 'pair';
 export type LineId = 'thin' | 'medium' | 'thick';
+export type InkId = 'blue' | 'grey' | 'green' | 'sepia';
+/** A preset colour, or one's own as six hex digits (1f3a7a). */
+export type Ink = InkId | string;
 
 export interface Settings {
   rule: Rule;
@@ -34,6 +37,7 @@ export interface Settings {
   depth: number;          // levels of replacement, 0 = the base itself
   line: LineId;
   construction: boolean;  // draw the control triangles of the finished pieces too
+  ink: Ink;               // colour of the line
 }
 
 export const MAX_DEPTH = 12;
@@ -68,6 +72,22 @@ export const LINE_IDS: LineId[] = ['thin', 'medium', 'thick'];
 export const INK = '#1f3a7a';
 export const CONSTRUCTION_INK = '#aab3cc';
 
+/** Line colours, as in Graph Paper (bsulkowski/graph-paper), with the site's ink for blue. */
+export const INKS: Record<InkId, string> = {
+  blue: INK,
+  grey: '#666666',
+  green: '#4f8c5d',
+  sepia: '#8b5e3c',
+};
+export const INK_IDS: InkId[] = ['blue', 'grey', 'green', 'sepia'];
+
+/** The line colour and the paler one of the construction triangles, two thirds of the way to white. */
+export function inkColors(ink: Ink): { line: string; construction: string } {
+  const hex = ink in INKS ? INKS[ink as InkId].slice(1) : /^[0-9a-f]{6}$/i.test(ink) ? ink.toLowerCase() : INK.slice(1);
+  const pale = [0, 2, 4].map((i) => Math.round((parseInt(hex.slice(i, i + 2), 16) + 2 * 255) / 3).toString(16).padStart(2, '0')).join('');
+  return { line: `#${hex}`, construction: `#${pale}` };
+}
+
 // ---- Presets: the shapes of the old script, with thirds written exactly ----
 
 export interface Preset {
@@ -80,6 +100,12 @@ export interface Preset {
 const t = 1 / 3, u = 2 / 3;
 
 export const PRESETS: Preset[] = [
+  { id: 'koch', name: { en: 'Koch snowflake', pl: 'Płatek Kocha' }, base: 'loop', rule: [
+    [[1, 0], [u, 0], [u, t]],
+    [[u, t], [u, 0], [t, t]],
+    [[t, t], [0, u], [t, u]],
+    [[t, u], [0, u], [0, 1]],
+  ] },
   { id: 'bezier', name: { en: 'Bézier curve', pl: 'Krzywa Béziera' }, base: 'arch', rule: [
     [[1, 0], [0.5, 0], [0.25, 0.25]],
     [[0.25, 0.25], [0, 0.5], [0, 1]],
@@ -125,12 +151,6 @@ export const PRESETS: Preset[] = [
     [[1, 0], [5 / 12, 1 / 6], [1 / 6, 5 / 12]],
     [[1 / 6, 5 / 12], [0, 0], [5 / 12, 1 / 6]],
     [[5 / 12, 1 / 6], [1 / 6, 5 / 12], [0, 1]],
-  ] },
-  { id: 'koch', name: { en: 'Koch snowflake', pl: 'Płatek Kocha' }, base: 'loop', rule: [
-    [[1, 0], [u, 0], [u, t]],
-    [[u, t], [u, 0], [t, t]],
-    [[t, t], [0, u], [t, u]],
-    [[t, u], [0, u], [0, 1]],
   ] },
   { id: 'cathedral', name: { en: 'Cathedral', pl: 'Katedra' }, base: 'arch', rule: [
     [[1, 0], [u, 0], [u, t]],
@@ -218,6 +238,7 @@ export const DEFAULTS: Settings = {
   depth: 10,
   line: 'medium',
   construction: false,
+  ink: 'blue',
 };
 
 export function presetById(id: string): Preset | undefined {
@@ -259,6 +280,47 @@ export function reversePiece([s, c, e]: Piece): Piece {
 }
 
 export const snap = (v: number, step = SNAP): number => Math.round(v / step) * step;
+
+/** Rounds away float noise: a value within a hair of the dots' grid lands on it. */
+const tidy = (v: number): number => (Math.abs(v - snap(v)) < 1e-6 ? snap(v) + 0 : v);  // + 0: no -0
+
+/**
+ * The same piece made equilateral: start and end stay, the control point moves to the apex,
+ * on the side where it was (on the side of the reference triangle's, if it lay on the chord).
+ * The grid of dots is triangular, so a piece with its ends on the dots keeps its apex on them.
+ */
+export function equilateralPiece([s, c, e]: Piece): Piece {
+  const [ps, pc, pe] = [s, c, e].map((p) => affine(REFERENCE, p));
+  const dx = pe[0] - ps[0], dy = pe[1] - ps[1];
+  const side = dx * (pc[1] - ps[1]) - dy * (pc[0] - ps[0]);
+  const k = (Math.sqrt(3) / 2) * (side > 1e-12 ? 1 : -1);
+  const apex: Point = [(ps[0] + pe[0]) / 2 - k * dy, (ps[1] + pe[1]) / 2 + k * dx];
+  const [a, b] = coordinates(REFERENCE, apex);
+  return [s, [tidy(a), tidy(b)], e];
+}
+
+/**
+ * A new piece for a rule: an upright copy of the reference triangle a third of its size,
+ * on the dots, as near the middle as it goes without a corner on a corner already there.
+ */
+export function newPiece(rule: Rule): Piece {
+  const k = 1 / 3, n = 24;
+  const taken = rule.flatMap((p) => p);
+  const free = (q: Point) => !taken.some((t) => close(t, q));
+  const [mx, my] = affine(REFERENCE, [1 / 3, 1 / 3]);
+  let best: Piece | null = null, bestD = Infinity;
+  for (let i = 8; i <= n; i++) {
+    for (let j = 0; i + j <= n; j++) {
+      const a = i / n, b = j / n;
+      const piece: Piece = [[a, b], [a - k, b], [a - k, b + k]];
+      if (!piece.every(free)) continue;
+      const [cx, cy] = affine(REFERENCE, [a - 2 * k / 3, b + k / 3]);
+      const d = Math.hypot(cx - mx, cy - my);
+      if (d < bestD - 1e-9) { bestD = d; best = piece; }
+    }
+  }
+  return best ?? [[1, 0], [1 - k, 0], [1 - k, k]];
+}
 
 const close = (p: Point, q: Point, eps = 1e-6) => Math.abs(p[0] - q[0]) < eps && Math.abs(p[1] - q[1]) < eps;
 
@@ -462,14 +524,15 @@ export function renderDrawing(s: Settings, o: DrawOptions = {}): Drawing {
   const showControls = s.construction && ex.count <= (o.constructionLimit ?? 4000);
   const map = fitter(ex.pieces, ex.count, size, showControls);
   const width = o.stroke ?? LINES[s.line] * size / 1000;
+  const ink = inkColors(s.ink ?? DEFAULTS.ink);
   const dims = o.width ? ` width="${o.width}" height="${o.width}"` : '';
   const parts = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}"${dims}>`,
     o.background ? `<rect width="${size}" height="${size}" fill="#ffffff"/>` : '',
     showControls
-      ? `<path d="${controlPath(ex.pieces, ex.count, map, precision)}" fill="none" stroke="${CONSTRUCTION_INK}" stroke-width="${(width * 0.6).toFixed(2)}" stroke-linejoin="round"/>`
+      ? `<path d="${controlPath(ex.pieces, ex.count, map, precision)}" fill="none" stroke="${ink.construction}" stroke-width="${(width * 0.6).toFixed(2)}" stroke-linejoin="round"/>`
       : '',
-    `<path d="${chordPath(ex.pieces, ex.count, map, precision)}" fill="none" stroke="${INK}" stroke-width="${width.toFixed(2)}" stroke-linejoin="round" stroke-linecap="round"/>`,
+    `<path d="${chordPath(ex.pieces, ex.count, map, precision)}" fill="none" stroke="${ink.line}" stroke-width="${width.toFixed(2)}" stroke-linejoin="round" stroke-linecap="round"/>`,
     '</svg>',
   ];
   return { svg: parts.join(''), level: ex.level, truncated: ex.truncated, count: ex.count };
@@ -539,9 +602,9 @@ export function presetOf(rule: Rule): Preset | undefined {
 }
 
 /**
- * Settings from a link. shape=<preset> or rule=<numbers>; base, depth, line, steps=1.
- * Anything missing or not understood takes the default. Names and meanings of the
- * parameters do not change; a new option gets a new parameter.
+ * Settings from a link. rule=<numbers>, or shape=<preset> (links before 1.2); base, depth,
+ * line, ink, steps=1. Anything missing or not understood takes the default. Names and
+ * meanings of the parameters do not change; a new option gets a new parameter.
  */
 export function parseSettings(q: URLSearchParams): Settings {
   const s: Settings = { ...DEFAULTS };
@@ -556,20 +619,20 @@ export function parseSettings(q: URLSearchParams): Settings {
   const line = q.get('line') as LineId;
   if (LINE_IDS.includes(line)) s.line = line;
   if (q.get('steps') === '1') s.construction = true;
+  const ink = (q.get('ink') ?? '').toLowerCase();
+  if (ink in INKS || /^[0-9a-f]{6}$/.test(ink)) s.ink = ink;
   return s;
 }
 
 export function settingsQuery(s: Settings): string {
   const q = new URLSearchParams();
-  const preset = presetOf(s.rule);
-  if (!sameRule(s.rule, DEFAULTS.rule)) {
-    if (preset) q.set('shape', preset.id);
-    else q.set('rule', encodeRule(s.rule));
-  }
+  // Every rule by its numbers, the presets too: the link shows what is drawn.
+  if (!sameRule(s.rule, DEFAULTS.rule)) q.set('rule', encodeRule(s.rule));
   if (s.base !== DEFAULTS.base) q.set('base', s.base);
   if (s.depth !== DEFAULTS.depth) q.set('depth', String(s.depth));
   if (s.line !== DEFAULTS.line) q.set('line', s.line);
   if (s.construction) q.set('steps', '1');
+  if (s.ink !== DEFAULTS.ink) q.set('ink', s.ink);
   return q.toString();
 }
 
