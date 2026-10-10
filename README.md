@@ -89,8 +89,8 @@ const { svg, level, truncated } = renderDrawing(settings, { budget: 50_000 });  
 renderSteps(rule);                                // levels 0–3 side by side, with their triangles
 
 expand(rule, BASES.arch, 6).pieces;               // Float64Array, six numbers per triangle
-splitPiece(rule[0]); reversePiece(rule[0]);       // operations of the editor on one triangle,
-equilateralPiece(rule[0]); newPiece(rule);         // and a new triangle on free dots
+splitPiece(rule[0]); reversePiece(rule[0]);       // one triangle cut along its curve, or run backwards
+equilateralPiece(rule[0]); newPiece(rule);         // the editor's Reset, and its Add: a triangle on free dots
 settingsQuery(settings);                          // 'rule=1_0_.6667_0_…&base=arch' — defaults are left out
 parseSettings(new URLSearchParams(settingsQuery(settings)));        // the same settings back
 ```
