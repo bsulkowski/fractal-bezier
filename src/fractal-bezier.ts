@@ -125,21 +125,8 @@ export const PRESETS: Preset[] = [
   ] },
   { id: 'vine', name: { en: 'Vine', pl: 'Pnącze' }, base: 'arch', rule: [
     [[1, 0], [0.5, 0], [0.25, 0.25]],
-    [[0.25, 0.25], [0.25, 0], [0, 0]],
-    [[0.25, 0.25], [0.25, 0.5], [0.5, 0.5]],
-    [[0.25, 0.25], [0, 0.5], [0, 1]],
-  ] },
-  { id: 'ladder', name: { en: 'Ladder', pl: 'Drabina' }, base: 'arch', rule: [
-    [[1, 0], [0.5, 0], [0.25, 0.25]],
-    [[0.5, 0], [0, 0], [0, 0.5]],
-    [[0.25, 0.25], [0, 0.5], [0, 1]],
-  ] },
-  { id: 'heart', name: { en: 'Heart', pl: 'Serce' }, base: 'arch', rule: [
-    [[1, 0], [0.5, 0], [0.25, 0.25]],
-    [[0.25, 0.25], [t, 0], [0.25, 0]],
-    [[0.25, 0], [0.125, 0], [0.125, 0.125]],
-    [[0.125, 0.125], [0, 0.125], [0, 0.25]],
-    [[0, 0.25], [0, t], [0.25, 0.25]],
+    [[0.25, 0.25], [0.25, 0], [0, 0.25]],
+    [[0.25, 0.25], [0.25, 0.75], [0.75, 0.25]],
     [[0.25, 0.25], [0, 0.5], [0, 1]],
   ] },
   { id: 'sail', name: { en: 'Sail', pl: 'Żagiel' }, base: 'arch', rule: [
@@ -147,25 +134,19 @@ export const PRESETS: Preset[] = [
     [[t, t], [0.5, 0], [0, 0]],
     [[0, 0], [t, t], [0, 1]],
   ] },
-  { id: 'tower', name: { en: 'Tower', pl: 'Wieża' }, base: 'arch', rule: [
-    [[1, 0], [5 / 12, 1 / 6], [1 / 6, 5 / 12]],
-    [[1 / 6, 5 / 12], [0, 0], [5 / 12, 1 / 6]],
-    [[5 / 12, 1 / 6], [1 / 6, 5 / 12], [0, 1]],
-  ] },
-  { id: 'cathedral', name: { en: 'Cathedral', pl: 'Katedra' }, base: 'arch', rule: [
-    [[1, 0], [u, 0], [u, t]],
-    [[u, t], [t, 0], [0, 0]],
-    [[0, 0], [0, t], [t, u]],
-    [[t, u], [0, u], [0, 1]],
-  ] },
-  { id: 'babia-gora', name: { en: 'Babia Góra', pl: 'Babia Góra' }, base: 'arch', rule: [
-    [[1, 0], [0.5, 0], [0.5, 0.25]],
-    [[0.5, 0.25], [0.5, 0.5], [0.25, 0.5]],
-    [[0.25, 0.5], [0, 0.5], [0, 1]],
-  ] },
   { id: 'mountains', name: { en: 'Mountains', pl: 'Góry' }, base: 'arch', rule: [
     [[1, 0], [0.5, 0], [0, 0.5]],
     [[0, 0.5], [0.5, 0.5], [0, 1]],
+  ] },
+  { id: 'hay', name: { en: 'Hay', pl: 'Siano' }, base: 'arch', rule: [
+    [[1, 0], [0.5, 0.5], [0, 0.5]],
+    [[0, 0.5], [0.125, 0.125], [0.5, 0]],
+    [[0.5, 0], [0, 0.5], [0, 1]],
+  ] },
+  { id: 'fly', name: { en: 'Fly', pl: 'Mucha' }, base: 'arch', rule: [
+    [[1, 0], [0.5, 0], [0, 0.5]],
+    [[0, 0.5], [0.5, 0.5], [0.5, 0]],
+    [[0.5, 0], [0, 0.5], [0, 1]],
   ] },
   { id: 'sierpinski', name: { en: 'Sierpiński arrowhead', pl: 'Grot Sierpińskiego' }, base: 'arch', rule: [
     [[1, 0], [0.5, 0.5], [0.5, 0]],
@@ -190,6 +171,60 @@ export const PRESETS: Preset[] = [
     [[0, u], [t, t], [t, u]],
     [[t, u], [0, u], [0, 1]],
   ] },
+  { id: 'dragon', name: { en: 'Dragon', pl: 'Smok' }, base: 'arch', rule: [
+    [[1, 0], [0.75, 0], [0.75, 0.25]],
+    [[0.75, 0.25], [0.25, 0.5], [0.5, 0]],
+    [[0.5, 0], [0, 0], [0, 0.5]],
+    [[0, 0.5], [-0.25, 1], [0.25, 0.75]],
+    [[0.25, 0.75], [0.25, 1], [0, 1]],
+  ] },
+  { id: 'cathedral', name: { en: 'Cathedral', pl: 'Katedra' }, base: 'arch', rule: [
+    [[1, 0], [u, 0], [u, t]],
+    [[u, t], [t, 0], [0, 0]],
+    [[0, 0], [0, t], [t, u]],
+    [[t, u], [0, u], [0, 1]],
+  ] },
+  { id: 'tree', name: { en: 'Christmas tree', pl: 'Choinka' }, base: 'pair', rule: [
+    [[1, 0], [0.6, 0.4], [0.6, 0.6]],
+    [[0.6, 0.6], [0.5, 0.6], [0.6, 0.4]],
+    [[0.6, 0.4], [0.1, 0.5], [0, 1]],
+  ] },
+  { id: 'heart', name: { en: 'Heart', pl: 'Serce' }, base: 'arch', rule: [
+    [[1, 0], [0.5, 0], [0.25, 0.25]],
+    [[0.25, 0.25], [t, 0], [0.25, 0]],
+    [[0.25, 0], [0.125, 0], [0.125, 0.125]],
+    [[0.125, 0.125], [0, 0.125], [0, 0.25]],
+    [[0, 0.25], [0, t], [0.25, 0.25]],
+    [[0.25, 0.25], [0, 0.5], [0, 1]],
+  ] },
+];
+
+/**
+ * Shapes no longer in the gallery, and the Vine as it was: read from links made before 1.2
+ * (shape=<name>), so that such a link still opens the same drawing.
+ */
+const RETIRED_SHAPES: Preset[] = [
+  { id: 'vine', name: { en: 'Vine', pl: 'Pnącze' }, base: 'arch', rule: [
+    [[1, 0], [0.5, 0], [0.25, 0.25]],
+    [[0.25, 0.25], [0.25, 0], [0, 0]],
+    [[0.25, 0.25], [0.25, 0.5], [0.5, 0.5]],
+    [[0.25, 0.25], [0, 0.5], [0, 1]],
+  ] },
+  { id: 'ladder', name: { en: 'Ladder', pl: 'Drabina' }, base: 'arch', rule: [
+    [[1, 0], [0.5, 0], [0.25, 0.25]],
+    [[0.5, 0], [0, 0], [0, 0.5]],
+    [[0.25, 0.25], [0, 0.5], [0, 1]],
+  ] },
+  { id: 'tower', name: { en: 'Tower', pl: 'Wieża' }, base: 'arch', rule: [
+    [[1, 0], [5 / 12, 1 / 6], [1 / 6, 5 / 12]],
+    [[1 / 6, 5 / 12], [0, 0], [5 / 12, 1 / 6]],
+    [[5 / 12, 1 / 6], [1 / 6, 5 / 12], [0, 1]],
+  ] },
+  { id: 'babia-gora', name: { en: 'Babia Góra', pl: 'Babia Góra' }, base: 'arch', rule: [
+    [[1, 0], [0.5, 0], [0.5, 0.25]],
+    [[0.5, 0.25], [0.5, 0.5], [0.25, 0.5]],
+    [[0.25, 0.5], [0, 0.5], [0, 1]],
+  ] },
   { id: 'frost', name: { en: 'Frost', pl: 'Szron' }, base: 'arch', rule: [
     [[1, 0], [1, t], [u, t]],
     [[u, t], [t, t], [u, 0]],
@@ -199,23 +234,6 @@ export const PRESETS: Preset[] = [
     [[0, u], [t, t], [t, u]],
     [[t, u], [t, 1], [0, 1]],
   ] },
-  { id: 'dragon', name: { en: 'Dragon', pl: 'Smok' }, base: 'arch', rule: [
-    [[1, 0], [0.75, 0], [0.75, 0.25]],
-    [[0.75, 0.25], [0.25, 0.5], [0.5, 0]],
-    [[0.5, 0], [0, 0], [0, 0.5]],
-    [[0, 0.5], [-0.25, 1], [0.25, 0.75]],
-    [[0.25, 0.75], [0.25, 1], [0, 1]],
-  ] },
-  { id: 'hay', name: { en: 'Hay', pl: 'Siano' }, base: 'arch', rule: [
-    [[1, 0], [0.5, 0.5], [0, 0.5]],
-    [[0, 0.5], [0.125, 0.125], [0.5, 0]],
-    [[0.5, 0], [0, 0.5], [0, 1]],
-  ] },
-  { id: 'fly', name: { en: 'Fly', pl: 'Mucha' }, base: 'arch', rule: [
-    [[1, 0], [0.5, 0], [0, 0.5]],
-    [[0, 0.5], [0.5, 0.5], [0.5, 0]],
-    [[0.5, 0], [0, 0.5], [0, 1]],
-  ] },
   { id: 'hut', name: { en: 'Hut', pl: 'Szałas' }, base: 'arch', rule: [
     [[1, 0], [0.5, 0], [0, 0.5]],
     [[0.5, 0], [0, 0.5], [0, 1]],
@@ -224,11 +242,6 @@ export const PRESETS: Preset[] = [
     [[t, t], [u, 0], [1, 0]],
     [[t, t], [0, t], [0, 0]],
     [[t, t], [t, u], [0, 1]],
-  ] },
-  { id: 'tree', name: { en: 'Christmas tree', pl: 'Choinka' }, base: 'pair', rule: [
-    [[1, 0], [0.6, 0.4], [0.6, 0.6]],
-    [[0.6, 0.6], [0.5, 0.6], [0.6, 0.4]],
-    [[0.6, 0.4], [0.1, 0.5], [0, 1]],
   ] },
 ];
 
@@ -608,7 +621,8 @@ export function presetOf(rule: Rule): Preset | undefined {
  */
 export function parseSettings(q: URLSearchParams): Settings {
   const s: Settings = { ...DEFAULTS };
-  const preset = presetById(q.get('shape') ?? '');
+  const name = q.get('shape') ?? '';
+  const preset = RETIRED_SHAPES.find((p) => p.id === name) ?? presetById(name);
   const rule = q.has('rule') ? decodeRule(q.get('rule') ?? '') : null;
   if (rule) s.rule = rule;
   else if (preset) s.rule = preset.rule;

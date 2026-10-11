@@ -7,7 +7,7 @@ daje idealnie gładką krzywą Béziera, inna płatek Kocha. Reguły można zmie
 **[bsulkowski.pl/pl/fractal-bezier](https://bsulkowski.pl/pl/fractal-bezier)**; w tym repozytorium
 jest kod, który je rysuje.
 
-![Dwadzieścia dwa kształty narysowane różnymi regułami](examples/gallery.svg)
+![Szesnaście kształtów narysowanych różnymi regułami](examples/gallery.svg)
 
 ## Pomysł
 
@@ -43,7 +43,7 @@ gdzie `[0.25, 0.25]` to środek krzywej, a `[0.5, 0]` i `[0, 0.5]` — środki r
   krzywej Béziera.
 - **Łańcuch** — łączą się końcami od początku do końca: jedna ciągła linia, choćby najbardziej
   poszarpana (Koch, Sierpiński, Katedra).
-- **Luźna** — nie łączą się: rysunek się rozgałęzia albo rozsypuje w pył (Pnącze, Wiatrak).
+- **Luźna** — nie łączą się: rysunek się rozgałęzia albo rozsypuje w pył (Pnącze).
 
 Trójkąt niewiele mniejszy od tego, który zastępuje, ustalałby się bardzo długo, więc rysunek
 zatrzymuje się przed poziomem, który przekroczyłby budżet kawałków, a kawałki mniejsze od

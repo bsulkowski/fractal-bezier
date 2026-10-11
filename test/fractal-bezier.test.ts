@@ -50,8 +50,8 @@ test('the Bézier rule converges to the curve of the base', () => {
 test('kinds of rules: smooth, chain, loose', () => {
   const kinds = Object.fromEntries(PRESETS.map((p) => [p.id, ruleKind(p.rule)]));
   assert.equal(kinds.bezier, 'smooth');
-  for (const id of ['koch', 'cathedral', 'sierpinski', 'star', 'frost', 'tree', 'heart', 'fly', 'wheel']) assert.equal(kinds[id], 'chain', id);
-  for (const id of ['vine', 'ladder', 'hut', 'windmill']) assert.equal(kinds[id], 'loose', id);
+  for (const id of ['koch', 'cathedral', 'sierpinski', 'star', 'lace', 'tree', 'heart', 'fly', 'wheel']) assert.equal(kinds[id], 'chain', id);
+  for (const id of ['vine']) assert.equal(kinds[id], 'loose', id);
   // Splitting a piece along the curve keeps the rule smooth, at any place.
   const more: Rule = [...splitPiece(bezier[0]), ...splitPiece(bezier[1])];
   assert.equal(ruleKind(more), 'smooth');
@@ -143,7 +143,7 @@ test('settings survive the link', () => {
   assert.equal(parseSettings(new URLSearchParams('ink=red')).ink, DEFAULTS.ink);
   assert.match(settingsQuery({ ...DEFAULTS, rule: cases[2].rule! }), /^rule=1_0_\.5_\.125_/);
   // The numbers need no escaping in a link.
-  const enc = encodeRule(presetById('frost')!.rule);
+  const enc = encodeRule(presetById('dragon')!.rule);
   assert.equal(new URLSearchParams({ rule: enc }).toString(), `rule=${enc}`);
 });
 
@@ -199,5 +199,19 @@ test('a new piece lands on free dots', () => {
     for (const c of p) assert.ok(!corners.some((t) => Math.abs(t[0] - c[0]) < 1e-9 && Math.abs(t[1] - c[1]) < 1e-9));
     assert.deepEqual(equilateralPiece(p).map((q) => q.map((v) => Math.round(v * 24))), p.map((q) => q.map((v) => Math.round(v * 24))));
     rule = [...rule, p];
+  }
+});
+
+test('links to shapes no longer in the gallery still open them', () => {
+  // As drawn by 1.1: Frost had a corner outside the triangle, the Vine branched from the middle.
+  const frost = parseSettings(new URLSearchParams('shape=frost&base=arch'));
+  assert.equal(frost.rule.length, 7);
+  assert.deepEqual(frost.rule[2][1].map((v) => Number(v.toFixed(4))), [0.6667, -0.3333]);
+  const vine = parseSettings(new URLSearchParams('shape=vine&base=arch'));
+  assert.ok(!sameRule(vine.rule, presetById('vine')!.rule));
+  assert.deepEqual(vine.rule[2], [[0.25, 0.25], [0.25, 0.5], [0.5, 0.5]]);
+  for (const id of ['ladder', 'tower', 'babia-gora', 'hut', 'windmill']) {
+    assert.equal(presetById(id), undefined, id);
+    assert.ok(!sameRule(parseSettings(new URLSearchParams(`shape=${id}`)).rule, DEFAULTS.rule), id);
   }
 });

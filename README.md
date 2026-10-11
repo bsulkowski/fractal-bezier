@@ -7,7 +7,7 @@ a perfectly smooth Bézier curve, another the Koch snowflake. Play with the rule
 at **[bsulkowski.pl/fractal-bezier](https://bsulkowski.pl/fractal-bezier)**; this repository
 holds the code that draws them.
 
-![Twenty-two shapes drawn with different rules](examples/gallery.svg)
+![Sixteen shapes drawn with different rules](examples/gallery.svg)
 
 ## The idea
 
@@ -44,7 +44,7 @@ two arms.
   together cover all of it, in two pieces or in more: the drawing converges to that Bézier curve.
 - **Chain** — they join end to end from the start to the end: one continuous line, however
   jagged (Koch, Sierpiński, the Cathedral).
-- **Loose** — they do not: the drawing branches or falls apart into dust (the Vine, the Windmill).
+- **Loose** — they do not: the drawing branches or falls apart into dust (the Vine).
 
 A triangle not much smaller than the one it replaces would take a very long time to settle,
 so the drawing stops before a level that would exceed a budget of pieces, and pieces smaller
@@ -119,7 +119,7 @@ what was drawn before. The level of detail and the budget may still change.
 
 `TOOL_VERSION` follows that: a new option → 1.1, a fix in the drawing → 1.0.1.
 
-- **1.2** — the line colour (`ink`); links carry every rule as its numbers (`shape` is still read); the Koch snowflake first among the shapes.
+- **1.2** — the line colour (`ink`); links carry every rule as its numbers (`shape` is still read); the Koch snowflake first among the shapes; fewer shapes, a new Vine (links to the old ones still open them).
 - **1.1** — the Wheel (`shape=wheel`).
 - **1.0** — the first version.
 
