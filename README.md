@@ -7,7 +7,7 @@ a perfectly smooth Bézier curve, another the Koch snowflake. Play with the rule
 at **[bsulkowski.pl/fractal-bezier](https://bsulkowski.pl/fractal-bezier)**; this repository
 holds the code that draws them.
 
-![Sixteen shapes drawn with different rules](examples/gallery.svg)
+![Fifteen shapes drawn with different rules](examples/gallery.svg)
 
 ## The idea
 
@@ -119,7 +119,7 @@ what was drawn before. The level of detail and the budget may still change.
 
 `TOOL_VERSION` follows that: a new option → 1.1, a fix in the drawing → 1.0.1.
 
-- **1.2** — the line colour (`ink`); links carry every rule as its numbers (`shape` is still read); the Koch snowflake first among the shapes; fewer shapes, a new Vine (links to the old ones still open them).
+- **1.2** — the line colour (`ink`); links carry every rule as its numbers (`shape` is still read); the Koch snowflake first among the shapes; fewer shapes, each with a colour of its own, and a new Vine (links to the old ones still open them).
 - **1.1** — the Wheel (`shape=wheel`).
 - **1.0** — the first version.
 

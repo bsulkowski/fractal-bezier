@@ -7,7 +7,7 @@ daje idealnie gładką krzywą Béziera, inna płatek Kocha. Reguły można zmie
 **[bsulkowski.pl/pl/fractal-bezier](https://bsulkowski.pl/pl/fractal-bezier)**; w tym repozytorium
 jest kod, który je rysuje.
 
-![Szesnaście kształtów narysowanych różnymi regułami](examples/gallery.svg)
+![Piętnaście kształtów narysowanych różnymi regułami](examples/gallery.svg)
 
 ## Pomysł
 

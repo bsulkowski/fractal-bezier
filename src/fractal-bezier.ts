@@ -89,12 +89,16 @@ export function inkColors(ink: Ink): { line: string; construction: string } {
 }
 
 // ---- Presets: the shapes of the old script, with thirds written exactly ----
+// Each with a line colour of its own: green for the Vine and the tree, red for the heart,
+// gold for the star; the Koch snowflake, the default, keeps the site's blue.
 
 export interface Preset {
   id: string;
   name: Record<Lang, string>;
   base: BaseId;
   rule: Rule;
+  /** The shape's own line colour, as the gallery shows it; blue when left out. */
+  ink?: Ink;
 }
 
 const t = 1 / 3, u = 2 / 3;
@@ -106,54 +110,54 @@ export const PRESETS: Preset[] = [
     [[t, t], [0, u], [t, u]],
     [[t, u], [0, u], [0, 1]],
   ] },
-  { id: 'bezier', name: { en: 'Bézier curve', pl: 'Krzywa Béziera' }, base: 'arch', rule: [
+  { id: 'bezier', name: { en: 'Bézier curve', pl: 'Krzywa Béziera' }, base: 'arch', ink: 'blue', rule: [
     [[1, 0], [0.5, 0], [0.25, 0.25]],
     [[0.25, 0.25], [0, 0.5], [0, 1]],
   ] },
   // Found by hand in 2026, on the loop base: 1.4% from a circle, but a fractal up close. An exact
   // circle cannot come out of this method: an affine map turns a circle into an ellipse.
-  { id: 'wheel', name: { en: 'Wheel', pl: 'Koło' }, base: 'loop', rule: [
+  { id: 'wheel', name: { en: 'Wheel', pl: 'Koło' }, base: 'loop', ink: '2b2b2b', rule: [
     [[1, 0], [0.5867, -0.0036], [0.3393, 0.3353]],
     [[0.3393, 0.3353], [0.0056, 0.5959], [0, 1]],
   ] },
-  { id: 'loops', name: { en: 'Loops', pl: 'Pętelki' }, base: 'arch', rule: [
+  { id: 'loops', name: { en: 'Loops', pl: 'Pętelki' }, base: 'arch', ink: '5b3f8c', rule: [
     [[1, 0], [0.5, 0], [0.25, 0.25]],
     [[0.25, 0.25], [0.5, 0], [0.25, 0]],
     [[0.25, 0], [0, 0], [0, 0.25]],
     [[0, 0.25], [0, 0.5], [0.25, 0.25]],
     [[0.25, 0.25], [0, 0.5], [0, 1]],
   ] },
-  { id: 'vine', name: { en: 'Vine', pl: 'Pnącze' }, base: 'arch', rule: [
+  { id: 'vine', name: { en: 'Vine', pl: 'Pnącze' }, base: 'arch', ink: 'green', rule: [
     [[1, 0], [0.5, 0], [0.25, 0.25]],
     [[0.25, 0.25], [0.25, 0], [0, 0.25]],
     [[0.25, 0.25], [0.25, 0.75], [0.75, 0.25]],
     [[0.25, 0.25], [0, 0.5], [0, 1]],
   ] },
-  { id: 'sail', name: { en: 'Sail', pl: 'Żagiel' }, base: 'arch', rule: [
+  { id: 'sail', name: { en: 'Sail', pl: 'Żagiel' }, base: 'arch', ink: '2f6f73', rule: [
     [[1, 0], [0.5, 0], [t, t]],
     [[t, t], [0.5, 0], [0, 0]],
     [[0, 0], [t, t], [0, 1]],
   ] },
-  { id: 'mountains', name: { en: 'Mountains', pl: 'Góry' }, base: 'arch', rule: [
+  { id: 'mountains', name: { en: 'Mountains', pl: 'Góry' }, base: 'arch', ink: 'grey', rule: [
     [[1, 0], [0.5, 0], [0, 0.5]],
     [[0, 0.5], [0.5, 0.5], [0, 1]],
   ] },
-  { id: 'hay', name: { en: 'Hay', pl: 'Siano' }, base: 'arch', rule: [
+  { id: 'hay', name: { en: 'Hay', pl: 'Siano' }, base: 'arch', ink: 'sepia', rule: [
     [[1, 0], [0.5, 0.5], [0, 0.5]],
     [[0, 0.5], [0.125, 0.125], [0.5, 0]],
     [[0.5, 0], [0, 0.5], [0, 1]],
   ] },
-  { id: 'fly', name: { en: 'Fly', pl: 'Mucha' }, base: 'arch', rule: [
+  { id: 'fly', name: { en: 'Fly', pl: 'Mucha' }, base: 'arch', ink: '2b2b2b', rule: [
     [[1, 0], [0.5, 0], [0, 0.5]],
     [[0, 0.5], [0.5, 0.5], [0.5, 0]],
     [[0.5, 0], [0, 0.5], [0, 1]],
   ] },
-  { id: 'sierpinski', name: { en: 'Sierpiński arrowhead', pl: 'Grot Sierpińskiego' }, base: 'arch', rule: [
+  { id: 'sierpinski', name: { en: 'Sierpiński arrowhead', pl: 'Grot Sierpińskiego' }, base: 'arch', ink: 'blue', rule: [
     [[1, 0], [0.5, 0.5], [0.5, 0]],
     [[0.5, 0], [0, 0], [0, 0.5]],
     [[0, 0.5], [0.5, 0.5], [0, 1]],
   ] },
-  { id: 'star', name: { en: 'Little star', pl: 'Gwiazdka' }, base: 'arch', rule: [
+  { id: 'star', name: { en: 'Little star', pl: 'Gwiazdka' }, base: 'arch', ink: 'b8860b', rule: [
     [[1, 0], [u, 0], [u, t]],
     [[u, t], [u, 0], [t, t]],
     [[t, t], [u, 0], [t, 0]],
@@ -162,34 +166,25 @@ export const PRESETS: Preset[] = [
     [[t, t], [0, u], [t, u]],
     [[t, u], [0, u], [0, 1]],
   ] },
-  { id: 'lace', name: { en: 'Lace', pl: 'Koronka' }, base: 'arch', rule: [
-    [[1, 0], [u, 0], [u, t]],
-    [[u, t], [t, t], [u, 0]],
-    [[u, 0], [t, t], [t, 0]],
-    [[t, 0], [t, t], [0, t]],
-    [[0, t], [t, t], [0, u]],
-    [[0, u], [t, t], [t, u]],
-    [[t, u], [0, u], [0, 1]],
-  ] },
-  { id: 'dragon', name: { en: 'Dragon', pl: 'Smok' }, base: 'arch', rule: [
+  { id: 'dragon', name: { en: 'Dragon', pl: 'Smok' }, base: 'arch', ink: '7a2a2a', rule: [
     [[1, 0], [0.75, 0], [0.75, 0.25]],
     [[0.75, 0.25], [0.25, 0.5], [0.5, 0]],
     [[0.5, 0], [0, 0], [0, 0.5]],
     [[0, 0.5], [-0.25, 1], [0.25, 0.75]],
     [[0.25, 0.75], [0.25, 1], [0, 1]],
   ] },
-  { id: 'cathedral', name: { en: 'Cathedral', pl: 'Katedra' }, base: 'arch', rule: [
+  { id: 'cathedral', name: { en: 'Cathedral', pl: 'Katedra' }, base: 'arch', ink: '3d4f63', rule: [
     [[1, 0], [u, 0], [u, t]],
     [[u, t], [t, 0], [0, 0]],
     [[0, 0], [0, t], [t, u]],
     [[t, u], [0, u], [0, 1]],
   ] },
-  { id: 'tree', name: { en: 'Christmas tree', pl: 'Choinka' }, base: 'pair', rule: [
+  { id: 'tree', name: { en: 'Christmas tree', pl: 'Choinka' }, base: 'pair', ink: 'green', rule: [
     [[1, 0], [0.6, 0.4], [0.6, 0.6]],
     [[0.6, 0.6], [0.5, 0.6], [0.6, 0.4]],
     [[0.6, 0.4], [0.1, 0.5], [0, 1]],
   ] },
-  { id: 'heart', name: { en: 'Heart', pl: 'Serce' }, base: 'arch', rule: [
+  { id: 'heart', name: { en: 'Heart', pl: 'Serce' }, base: 'arch', ink: 'c0392b', rule: [
     [[1, 0], [0.5, 0], [0.25, 0.25]],
     [[0.25, 0.25], [t, 0], [0.25, 0]],
     [[0.25, 0], [0.125, 0], [0.125, 0.125]],
@@ -204,6 +199,15 @@ export const PRESETS: Preset[] = [
  * (shape=<name>), so that such a link still opens the same drawing.
  */
 const RETIRED_SHAPES: Preset[] = [
+  { id: 'lace', name: { en: 'Lace', pl: 'Koronka' }, base: 'arch', rule: [
+    [[1, 0], [u, 0], [u, t]],
+    [[u, t], [t, t], [u, 0]],
+    [[u, 0], [t, t], [t, 0]],
+    [[t, 0], [t, t], [0, t]],
+    [[0, t], [t, t], [0, u]],
+    [[0, u], [t, t], [t, u]],
+    [[t, u], [0, u], [0, 1]],
+  ] },
   { id: 'vine', name: { en: 'Vine', pl: 'Pnącze' }, base: 'arch', rule: [
     [[1, 0], [0.5, 0], [0.25, 0.25]],
     [[0.25, 0.25], [0.25, 0], [0, 0]],

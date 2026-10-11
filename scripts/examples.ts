@@ -18,7 +18,7 @@ const cell = 200, label = 28, cols = 5;
 const rows = Math.ceil(PRESETS.length / cols);
 const cells = PRESETS.map((p, i) => {
   const x = (i % cols) * cell, y = Math.floor(i / cols) * (cell + label);
-  const d = renderDrawing({ ...DEFAULTS, rule: p.rule, base: p.base }, { size: cell, detail: 1 / 250, budget: 8000, precision: 1 });
+  const d = renderDrawing({ ...DEFAULTS, rule: p.rule, base: p.base, ink: p.ink ?? DEFAULTS.ink }, { size: cell, detail: 1 / 250, budget: 8000, precision: 1 });
   const inner = d.svg.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
   return `<g transform="translate(${x} ${y})">${inner}<text x="${cell / 2}" y="${cell + 18}" text-anchor="middle">${p.name.en}</text></g>`;
 }).join('');

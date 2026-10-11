@@ -50,7 +50,7 @@ test('the Bézier rule converges to the curve of the base', () => {
 test('kinds of rules: smooth, chain, loose', () => {
   const kinds = Object.fromEntries(PRESETS.map((p) => [p.id, ruleKind(p.rule)]));
   assert.equal(kinds.bezier, 'smooth');
-  for (const id of ['koch', 'cathedral', 'sierpinski', 'star', 'lace', 'tree', 'heart', 'fly', 'wheel']) assert.equal(kinds[id], 'chain', id);
+  for (const id of ['koch', 'cathedral', 'sierpinski', 'star', 'tree', 'heart', 'fly', 'wheel']) assert.equal(kinds[id], 'chain', id);
   for (const id of ['vine']) assert.equal(kinds[id], 'loose', id);
   // Splitting a piece along the curve keeps the rule smooth, at any place.
   const more: Rule = [...splitPiece(bezier[0]), ...splitPiece(bezier[1])];
@@ -214,4 +214,15 @@ test('links to shapes no longer in the gallery still open them', () => {
     assert.equal(presetById(id), undefined, id);
     assert.ok(!sameRule(parseSettings(new URLSearchParams(`shape=${id}`)).rule, DEFAULTS.rule), id);
   }
+});
+
+test('every shape in the gallery has a colour that a link carries', () => {
+  for (const p of PRESETS) {
+    const ink = p.ink ?? DEFAULTS.ink;
+    assert.equal(parseSettings(new URLSearchParams(settingsQuery({ ...DEFAULTS, rule: p.rule, base: p.base, ink }))).ink, ink, p.id);
+  }
+  assert.equal(presetById('koch')!.ink ?? DEFAULTS.ink, DEFAULTS.ink);
+  assert.equal(presetById('heart')!.ink, 'c0392b');
+  assert.equal(presetById('lace'), undefined);
+  assert.equal(parseSettings(new URLSearchParams('shape=lace&base=arch')).rule.length, 7);
 });
